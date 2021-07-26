@@ -9,10 +9,10 @@
       <h2 class="mt-6">
         Listos
       </h2>
-      <v-row>
+      <v-row v-if="ready.length > 0">
         <v-col
-          v-for="n in 4"
-          :key="n"
+          v-for="p in ready"
+          :key="p.id"
           cols="2"
         >
           <v-tooltip bottom color="blue-grey darken-1">
@@ -24,20 +24,21 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                P{{ n }}
+                P{{ p.id }}
               </v-card>
             </template>
-            <span>Bottom tooltip</span>
+            <span>Burst Time: {{ p.burstTime }}</span>
+            <span>Wait Time: {{ p.waitTime }}</span>
           </v-tooltip>
         </v-col>
       </v-row>
       <h2 class="mt-6">
         CPU
       </h2>
-      <v-row>
+      <v-row v-if="cpu.length > 0">
         <v-col
-          v-for="n in 1"
-          :key="n"
+          v-for="p in cpu"
+          :key="p.id"
           cols="2"
         >
           <v-tooltip bottom>
@@ -50,20 +51,21 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                P{{ n }}
+                P{{ p.id }}
               </v-card>
             </template>
-            <span>Bottom tooltip</span>
+            <span>Burst Time: {{ p.burstTime }}</span>
+            <span>Wait Time: {{ p.waitTime }}</span>
           </v-tooltip>
         </v-col>
       </v-row>
       <h2 class="mt-6">
         Terminados
       </h2>
-      <v-row>
+      <v-row v-if="finished.length > 0">
         <v-col
-          v-for="n in 4"
-          :key="n"
+          v-for="p in finished"
+          :key="p.id"
           cols="2"
         >
           <v-tooltip bottom>
@@ -75,10 +77,11 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                P{{ n }}
+                P{{ p.id }}
               </v-card>
             </template>
-            <span>Bottom tooltip</span>
+            <span>Burst Time: {{ p.burstTime }}</span>
+            <span>Wait Time: {{ p.waitTime }}</span>
           </v-tooltip>
         </v-col>
       </v-row>
@@ -113,7 +116,12 @@ export default {
     return {
       play: false,
       timer: null,
-      step: 0
+      step: 0,
+      ready: [],
+      cpu: [],
+      cpuIdle: 0,
+      finished: [],
+      n: 0
     }
   },
   computed: {
@@ -130,7 +138,33 @@ export default {
   watch: {
     play () {
       if (this.play) {
-        this.timer = setInterval(() => { this.step += 1 }, 1000)
+        // Iniciar Timer
+        this.timer = setInterval(() => {
+          // Agregar tiempo de espera
+          this.ready = this.ready.map((p) => {
+            p.waitTime += 1
+            return p
+          })
+          // Evaluar si incluir un nuevo proceso a listo
+          const randomInt = Math.floor(Math.random() * 10) + 1
+          if (randomInt > 6) {
+            this.n += 1
+            this.ready.push({ id: this.n, burstTime: Math.floor(Math.random() * 6) + 1, waitTime: 0 })
+          }
+          // Evaluar si el CPU está vacío y pasar proceso FCFS
+          // De lo contrario quemar tiempo en el proceso
+          if (this.cpu.length === 0 && this.ready.length > 0) {
+            this.cpu.push(this.ready.shift())
+          } else if (this.cpu.length > 0 && this.cpu[0].burstTime === 0) {
+            this.finished.push(this.cpu.pop())
+          } else if (this.cpu.length > 0) {
+            this.cpu[0].burstTime -= 1
+          } else {
+            this.cpuIdle += 1
+          }
+          // Aumentar el step cada ciclo
+          this.step += 1
+        }, 1000)
       } else {
         clearInterval(this.timer)
         this.timer = null
@@ -140,6 +174,11 @@ export default {
   methods: {
     reset () {
       this.step = 0
+      this.n = 0
+      this.ready = []
+      this.cpu = []
+      this.finished = []
+      this.cpuIdle = 0
     }
   }
 }
