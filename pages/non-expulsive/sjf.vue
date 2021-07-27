@@ -2,10 +2,10 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <h1 class="text-h3 text-center my-6">
-        Primero en llegar primero en ejecutar (FCFS)
+        Primero trabajo mas corto (SJF)
       </h1>
       <p class="text-body-1 text-justify">
-        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por orden de llegada, es decir, el primero que llega a la cola es el primero que pasa al CPU para ser ejecutado.
+        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por tiempo de procesamiento restante de menor a mayor (menor sale primero).
       </p>
       <p class="text-body-1 text-justify">
         No hay expulsión, esto da a entender que una vez que un proceso esté ejecutandose en el procesador, se debe esperar a que se ejecute en su totalidad para poder pasar otro proceso a ejecución.
@@ -82,7 +82,7 @@
 
 <script>
 export default {
-  name: 'FCFS',
+  name: 'SJF',
   data () {
     return {
       play: false,
@@ -179,6 +179,9 @@ export default {
             return true
           }
         })
+
+      // Ordenar por burst time
+      this.ready.sort((a, b) => a.burstTime - b.burstTime)
 
       // Evaluar si el CPU está vacío y pasar proceso FCFS
       // De lo contrario quemar tiempo en el proceso

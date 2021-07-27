@@ -27,7 +27,6 @@
         v-for="item in expulsive"
         :key="item.link"
         class="my-4"
-        outline
         block
         color="primary"
         dark
@@ -47,7 +46,7 @@ export default {
     return {
       nonExpulsive: [
         { text: 'Primero en llegar primero en ejecutar (FCFS)', link: '/non-expulsive/fcfs', disabled: false },
-        { text: 'Primero el trabajo mas corto (SJF)', link: '/non-expulsive/sjf', disabled: true },
+        { text: 'Primero el trabajo mas corto (SJF)', link: '/non-expulsive/sjf', disabled: false },
         { text: 'Selección aleatoria', link: '/non-expulsive/random', disabled: true }
       ],
       expulsive: [
