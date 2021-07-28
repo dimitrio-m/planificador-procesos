@@ -10,7 +10,7 @@
       app
       absolute
     >
-      Simulación de diferentes algoritmos de planificación de un CPU por &nbsp; <a href="https://dimitriosmandamadiotis.com">Dimitrio Mandamadiotis</a>. El código esta disponible en &nbsp; <a href=""> GitHub</a>
+      Simulación de diferentes algoritmos de planificación de un CPU por &nbsp; <a href="https://dimitriosmandamadiotis.com">Dimitrio Mandamadiotis</a>. El código esta disponible en &nbsp; <a href="https://github.com/dimitrio-m/planificador-procesos"> GitHub</a>
     </v-footer>
   </v-app>
 </template>
