@@ -2,10 +2,10 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <h1 class="text-h3 text-center my-6">
-        Primero trabajo mas corto (SJF)
+        Selección Aleatoria
       </h1>
       <p class="text-body-1 text-justify">
-        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por tiempo de procesamiento restante de menor a mayor (menor sale primero).
+        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos son seleccionados para su ejecución de forma aleatoria.
       </p>
       <p class="text-body-1 text-justify">
         No hay expulsión, esto da a entender que una vez que un proceso esté ejecutandose en el procesador, se debe esperar a que se ejecute en su totalidad para poder pasar otro proceso a ejecución.
@@ -82,7 +82,7 @@
 
 <script>
 export default {
-  name: 'SJF',
+  name: 'Random',
   data () {
     return {
       play: false,
@@ -180,13 +180,12 @@ export default {
           }
         })
 
-      // Ordenar por burst time
-      this.ready.sort((a, b) => a.burstTime - b.burstTime)
-
       // Evaluar si el CPU está vacío y pasar proceso
       // De lo contrario quemar tiempo en el proceso
       if (this.cpu.length === 0 && this.ready.length > 0) {
-        this.cpu.push(this.ready.shift())
+        const randomProcessIndex = Math.floor(Math.random() * this.ready.length)
+        this.cpu.push({ ...this.ready[randomProcessIndex] })
+        this.ready.splice(randomProcessIndex, 1)
       } else if (this.cpu.length > 0 && this.cpu[0].burstTime === 0) {
         this.finished.push(this.cpu.pop())
       } else if (this.cpu.length > 0) {

@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-main>
+    <v-main class="my-16">
       <v-container>
         <Nuxt />
       </v-container>
@@ -8,8 +8,9 @@
 
     <v-footer
       app
+      absolute
     >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      Simulación de diferentes algoritmos de planificación de un CPU por &nbsp; <a href="https://dimitriosmandamadiotis.com">Dimitrio Mandamadiotis</a>. El código esta disponible en &nbsp; <a href=""> GitHub</a>
     </v-footer>
   </v-app>
 </template>

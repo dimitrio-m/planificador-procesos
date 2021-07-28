@@ -16,6 +16,7 @@
               tile
               outlined
               v-bind="attrs"
+              :color="p.isPaying ? 'primary' : null"
               v-on="on"
             >
               P{{ p.id }}

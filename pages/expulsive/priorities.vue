@@ -2,13 +2,13 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <h1 class="text-h3 text-center my-6">
-        Primero trabajo mas corto (SJF)
+        Planificación basada en prioridades
       </h1>
       <p class="text-body-1 text-justify">
-        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por tiempo de procesamiento restante de menor a mayor (menor sale primero).
+        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por prioridad, en este caso se marcan en azul los procesos que tienen una prioridad mayor. Un ejemplo de prioridad pueden ser procesos criticos de un sistema o procesos en los que el usuario paga para obtener prioridad en el procesador.
       </p>
       <p class="text-body-1 text-justify">
-        No hay expulsión, esto da a entender que una vez que un proceso esté ejecutandose en el procesador, se debe esperar a que se ejecute en su totalidad para poder pasar otro proceso a ejecución.
+        La expulsión de un proceso que está en el CPU ocurre cuando llega un proceso de mayor prioridad a la cola de listos. La expulsión consiste en enviar el proceso de nuevo a la cola de listos.
       </p>
       <p class="text-body-1 text-justify">
         En la siguiente simulación se tiene una probabilidad del 20% en cada paso para que aparezca un proceso nuevo en la cola de listos y cada proceso tiene un tiempo en procesador (burst time) entre uno y diez dado por un generador de números pseudoaleatorios con distribución aproximadamente uniforme, también hay una probabilidad de 10% para que un proceso ejecute una operación de entrada o salida mientras está en el cpu por un tiempo de entre uno y cinco pasos.
@@ -54,6 +54,9 @@
         <v-col cols="12">
           <p>Arribo de nuevos procesos por paso: {{ arrivalPerStep.toFixed(2) }} procesos</p>
         </v-col>
+        <v-col cols="12">
+          <p>Cantidad de swaps/expulsiones realizados: {{ swaps }} </p>
+        </v-col>
       </v-row>
       <v-row>
         <v-btn class="mt-6" outlined to="/">
@@ -82,7 +85,7 @@
 
 <script>
 export default {
-  name: 'SJF',
+  name: 'Priorities',
   data () {
     return {
       play: false,
@@ -94,7 +97,8 @@ export default {
       finished: [],
       blocked: [],
       n: 0,
-      stepTime: 500
+      stepTime: 500,
+      swaps: 0
     }
   },
   computed: {
@@ -150,6 +154,7 @@ export default {
       this.finished = []
       this.blocked = []
       this.cpuIdle = 0
+      this.swaps = 0
     },
     stepHandler () {
       // Agregar tiempo de espera
@@ -161,7 +166,7 @@ export default {
       const shouldCreateNewProcess = Math.floor(Math.random() * 100) + 1 >= 80
       if (shouldCreateNewProcess) {
         this.n += 1
-        this.ready.push({ id: this.n, burstTime: Math.floor(Math.random() * 10) + 1, waitTime: 0, cpuTime: 0, ioTime: 0 })
+        this.ready.push({ id: this.n, burstTime: Math.floor(Math.random() * 10) + 1, waitTime: 0, cpuTime: 0, ioTime: 0, isPaying: Math.floor(Math.random() * 100) + 1 >= 75 })
       }
 
       // Bajar tiempo bloqueado y mover a listo en caso de terminar
@@ -180,8 +185,8 @@ export default {
           }
         })
 
-      // Ordenar por burst time
-      this.ready.sort((a, b) => a.burstTime - b.burstTime)
+      // Ordenar por prioridad
+      this.ready.sort((a, b) => b.isPaying - a.isPaying)
 
       // Evaluar si el CPU está vacío y pasar proceso
       // De lo contrario quemar tiempo en el proceso
@@ -190,6 +195,12 @@ export default {
       } else if (this.cpu.length > 0 && this.cpu[0].burstTime === 0) {
         this.finished.push(this.cpu.pop())
       } else if (this.cpu.length > 0) {
+        // Expulsión swap
+        if (this.ready.length > 0 && this.ready[0].isPaying && !this.cpu[0].isPaying) {
+          this.swaps += 1
+          this.ready.push(this.cpu.shift())
+          this.cpu.push(this.ready.shift())
+        }
         const shouldDoIO = Math.floor(Math.random() * 100) + 1 >= 90
         if (shouldDoIO) {
           this.cpu[0].ioBurstTime = Math.floor(Math.random() * 5) + 1

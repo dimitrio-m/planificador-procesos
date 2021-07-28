@@ -2,10 +2,10 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <h1 class="text-h3 text-center my-6">
-        Primero trabajo mas corto (SJF)
+        Planificación basada en prioridades
       </h1>
       <p class="text-body-1 text-justify">
-        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por tiempo de procesamiento restante de menor a mayor (menor sale primero).
+        Este algoritmo emplea una cola de "listos" donde llegan los procesos que están listos para ejecutar. Los procesos se organizan por prioridad, en este caso se marcan en azul los procesos que tienen una prioridad mayor. Un ejemplo de prioridad pueden ser procesos criticos de un sistema o procesos en los que el usuario paga para obtener prioridad en el procesador.
       </p>
       <p class="text-body-1 text-justify">
         No hay expulsión, esto da a entender que una vez que un proceso esté ejecutandose en el procesador, se debe esperar a que se ejecute en su totalidad para poder pasar otro proceso a ejecución.
@@ -82,7 +82,7 @@
 
 <script>
 export default {
-  name: 'SJF',
+  name: 'Priorities',
   data () {
     return {
       play: false,
@@ -161,7 +161,7 @@ export default {
       const shouldCreateNewProcess = Math.floor(Math.random() * 100) + 1 >= 80
       if (shouldCreateNewProcess) {
         this.n += 1
-        this.ready.push({ id: this.n, burstTime: Math.floor(Math.random() * 10) + 1, waitTime: 0, cpuTime: 0, ioTime: 0 })
+        this.ready.push({ id: this.n, burstTime: Math.floor(Math.random() * 10) + 1, waitTime: 0, cpuTime: 0, ioTime: 0, isPaying: Math.floor(Math.random() * 100) + 1 >= 75 })
       }
 
       // Bajar tiempo bloqueado y mover a listo en caso de terminar
@@ -180,8 +180,8 @@ export default {
           }
         })
 
-      // Ordenar por burst time
-      this.ready.sort((a, b) => a.burstTime - b.burstTime)
+      // Ordenar por prioridad
+      this.ready.sort((a, b) => b.isPaying - a.isPaying)
 
       // Evaluar si el CPU está vacío y pasar proceso
       // De lo contrario quemar tiempo en el proceso

@@ -47,12 +47,13 @@ export default {
       nonExpulsive: [
         { text: 'Primero en llegar primero en ejecutar (FCFS)', link: '/non-expulsive/fcfs', disabled: false },
         { text: 'Primero el trabajo mas corto (SJF)', link: '/non-expulsive/sjf', disabled: false },
-        { text: 'Selección aleatoria', link: '/non-expulsive/random', disabled: true }
+        { text: 'Selección aleatoria', link: '/non-expulsive/random', disabled: false },
+        { text: 'Planificación basada en prioridades', link: '/non-expulsive/priorities', disabled: false }
       ],
       expulsive: [
-        { text: 'Turno rotatorio (round robin)', link: '/roundrobin', disabled: true },
-        { text: 'Primero el menor tiempo restante (SRTF)', link: '/srtf', disabled: true },
-        { text: 'Planificación basada en prioridades', link: '/priorities', disabled: true },
+        { text: 'Turno rotatorio (round robin)', link: '/expulsive/round-robin', disabled: false },
+        { text: 'Primero el menor tiempo restante (SRTF)', link: '/expulsive/srtf', disabled: false },
+        { text: 'Planificación basada en prioridades', link: '/expulsive/priorities', disabled: false },
         { text: 'Colas Multinivel', link: '/multilevel', disabled: true }
       ]
     }
